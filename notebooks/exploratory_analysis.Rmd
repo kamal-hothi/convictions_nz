@@ -1,16 +1,58 @@
 ---
-title: "R Notebook"
+title: "Exploratory analysis for NZ convictions data"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+# Convictions data for NZ
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
 ```{r}
-plot(cars)
+library("dplyr")
+library("tidyr")
+library("ggplot2")
+library("readr")
+library("zoo")
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+```{r}
+con <- read_csv("../data/convicted-offenders-02-10-2013.csv")
+
+names(con) <- tolower(names(con))
+
+con$year <- as.yearmon(con$year,"%Y/%m")
+con$year <- as.Date(con$year)
+
+
+
+```
+```{r}
+
+
+str(con)
+# Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	242007 obs. of  8 variables:
+#  $ year        : Date, format: "2003-04-01" "2003-04-01" "2003-04-01" "2003-04-01" ...
+#  $ offence     : chr  "Abduction, harassment and other offences against the person" "Abduction, harassment and other offences against the person" "Abduction, harassment and other offences against the person" "Abduction, harassment and other offences against the person" ...
+#  $ sentence    : chr  "Community work, Corrections" "Community work, Corrections" "Community work, Corrections" "Community work, Corrections" ...
+#  $ courtcluster: chr  "Northland" "Northland" "Northland" "Northland" ...
+#  $ agegroup    : chr  "17-19" "20-24" "25-29" "30-39" ...
+#  $ gender      : chr  "Female" "Male" "Male" "Male" ...
+#  $ ethnicity   : chr  "Maori" "Maori" "Maori" "European" ...
+#  $ count       : int  1 5 1 1 1 1 1 1 1 1 ...
+#  
+
+# what are the types of offences
+offences <- unique(con$offence)
+offences
+writeLines(offences,"../data/unique_offences.txt")
+
+sentences <- unique(con$sentence)
+sentences
+writeLines(sentences,"../data/sentences.txt")
+
+courts <- unique(con$courtcluster)
+courts
+writeLines(courts,"../data/cout_cluster.txt")
+
+```
+
